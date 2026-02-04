@@ -47,7 +47,7 @@ This repository presents validated experimental results of the DEMON algorithm �
 
 **Metamorphic proteins — DEMON SEES TWO ATTRACTORS:**
 - Detection rate: **97.7%** (42/43 metamorphic positions)
-- Bimodal kNN: returns BOTH helix AND sheet neighbors
+- Bimodal detection: returns BOTH helix AND sheet conformations
 - Same sequence → two conformations detected
 - *AlphaFold cannot do this — one structure per sequence*
 
@@ -285,7 +285,7 @@ Licensed under [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licens
 
 **Метаморфные белки — DEMON ВИДИТ ДВА АТТРАКТОРА:**
 - Детекция: **97.7%** (42/43 метаморфных позиций)
-- Бимодальный kNN: возвращает И спираль И лист соседей
+- Бимодальная детекция: возвращает И спираль И лист конформации
 - Одна последовательность → две конформации обнаружены
 - *AlphaFold не может этого — одна структура на последовательность*
 
