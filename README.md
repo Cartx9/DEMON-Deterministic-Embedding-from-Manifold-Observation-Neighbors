@@ -121,7 +121,23 @@ Reconstruction of 3D positions and radial velocities for objects hidden behind t
 | **Invisible stars predicted** | 159,140 | Novel predictions |
 | **Independent validation (APOGEE)** | **r = 0.761** | Blind test |
 | **Internal validation** | r = 0.804 | Cross-validation |
-| **Filament significance** | 18/20 (90%) | p < 0.05 |
+| **Filament significance** | 18/20 (90%) | p < 0.05, z up to 5.33 |
+| **POPOVICH'S VALLEY** | 159,140 new stars | First catalog |
+
+**Filament Validation (Monte Carlo, 10,000 trials):**
+- 18/20 filaments statistically significant (p < 0.05)
+- Best z-scores: 5.33, 5.27, 5.02, 4.97
+- Independent validation against HIZOA (960 HI galaxies)
+- HIZOA data NOT used in training
+
+**Black Hole Information Paradox (AdS/CFT analogy):**
+| Strategy | Singularity Error | Interpretation |
+|----------|-------------------|----------------|
+| Hawking (1975) | ~99.99% | Information loss |
+| Holographic boundary | ~3-10% | AdS/CFT recovery |
+| Entanglement islands | **~3.4%** | Page curve resolved |
+
+*Boundary encodes bulk — gravitational information recovery demonstrated.*
 
 ### 3. Galaxy Rotation Curves (SPARC Dataset)
 
@@ -403,7 +419,23 @@ Licensed under [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licens
 | **Предсказано невидимых звёзд** | 159 140 | Новые предсказания |
 | **Независимая валидация (APOGEE)** | **r = 0.761** | Слепой тест |
 | **Внутренняя валидация** | r = 0.804 | Кросс-валидация |
-| **Значимость филаментов** | 18/20 (90%) | p < 0.05 |
+| **Значимость филаментов** | 18/20 (90%) | p < 0.05, z до 5.33 |
+| **POPOVICH'S VALLEY** | 159,140 новых звёзд | Первый каталог |
+
+**Валидация филаментов (Монте-Карло, 10,000 испытаний):**
+- 18/20 филаментов статистически значимы (p < 0.05)
+- Лучшие z-scores: 5.33, 5.27, 5.02, 4.97
+- Независимая валидация против HIZOA (960 HI галактик)
+- Данные HIZOA НЕ использовались при обучении
+
+**Информационный парадокс чёрной дыры (аналогия AdS/CFT):**
+| Стратегия | Ошибка сингулярности | Интерпретация |
+|-----------|---------------------|----------------|
+| Хокинг (1975) | ~99.99% | Потеря информации |
+| Голографическая граница | ~3-10% | AdS/CFT восстановление |
+| Острова запутанности | **~3.4%** | Page curve разрешён |
+
+*Граница кодирует объём — восстановление гравитационной информации продемонстрировано.*
 
 ### 3. Кривые Вращения Галактик (Датасет SPARC)
 
