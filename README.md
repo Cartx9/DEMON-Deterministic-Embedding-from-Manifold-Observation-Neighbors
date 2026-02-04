@@ -308,6 +308,25 @@ Reconstruction of 3D positions and radial velocities for objects hidden behind t
 
 **Extracting black hole spin from X-ray timing via topology — WORLD FIRST**
 
+<div align="center">
+
+![Black Hole GRS 1915+105 Animation](images/black_hole_animation.gif)
+
+**First-ever visualization of GRS 1915+105 accretion structure from REAL X-ray data**
+
+*Not CGI. Not simulation. Real dynamics extracted from 21.9 million photons.*
+
+</div>
+
+| Comparison | What it shows | Data source |
+|------------|---------------|-------------|
+| **Event Horizon Telescope** | Shadow of M87*, Sgr A* | Radio interferometry |
+| **Interstellar (CGI)** | Artistic interpretation | GR equations |
+| **NASA simulations** | Theoretical models | Numerical modeling |
+| **DEMON (this work)** | **Real accretion dynamics** | **21.9M X-ray events!** |
+
+---
+
 ```
 ╔════════════════════════════════════════════════════════════════════╗
 ║                                                                    ║
