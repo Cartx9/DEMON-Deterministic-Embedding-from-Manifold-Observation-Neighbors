@@ -124,9 +124,18 @@ Reconstruction of 3D positions and radial velocities for objects hidden behind t
 | **DEMON** | **0.796** | **NONE** |
 | CADD | 0.80-0.85 | Yes |
 
+**Known pathogenic mutations sensitivity: 93.3%**
+
+| Gene | Sensitivity |
+|------|-------------|
+| BRCA1 | **100%** |
+| CFTR | **100%** |
+| LRRK2 | **100%** |
+| TP53 | 88% |
+| SNCA | 83% |
+
 **BLOSUM62 score (evolution already learned):**
-- Pathogenic mutations: **-1.08** (rare in nature)
-- Benign mutations: **-0.17** (common in nature)
+- Pathogenic: **-1.30** | Benign: **+0.75** | Gap: **2.05**
 
 *Beats FoldX, matches PolyPhen2, approaches CADD — without any training.*
 
@@ -343,9 +352,18 @@ Licensed under [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licens
 | **DEMON** | **0.796** | **НЕТ** |
 | CADD | 0.80-0.85 | Да |
 
+**Чувствительность на известных патогенных мутациях: 93.3%**
+
+| Ген | Чувствительность |
+|-----|------------------|
+| BRCA1 | **100%** |
+| CFTR | **100%** |
+| LRRK2 | **100%** |
+| TP53 | 88% |
+| SNCA | 83% |
+
 **BLOSUM62 скор (эволюция уже выучила):**
-- Патогенные мутации: **-1.08** (редкие в природе)
-- Доброкачественные: **-0.17** (частые в природе)
+- Патогенные: **-1.30** | Доброкачественные: **+0.75** | Разрыв: **2.05**
 
 *Бьёт FoldX, на уровне PolyPhen2, близко к CADD — без обучения.*
 
