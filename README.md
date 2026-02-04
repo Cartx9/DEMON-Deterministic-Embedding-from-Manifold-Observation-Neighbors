@@ -45,6 +45,12 @@ This repository presents validated experimental results of the DEMON algorithm �
 - Tau protein (Alzheimer disease)
 - Amyloid-beta 1-42
 
+**Metamorphic proteins — DEMON SEES TWO ATTRACTORS:**
+- Detection rate: **97.7%** (42/43 metamorphic positions)
+- Bimodal kNN: returns BOTH helix AND sheet neighbors
+- Same sequence → two conformations detected
+- *AlphaFold cannot do this — one structure per sequence*
+
 ### 2. Zone of Avoidance Reconstruction (Cosmology)
 
 Reconstruction of 3D positions and radial velocities for objects hidden behind the Milky Way disk.
@@ -276,6 +282,12 @@ Licensed under [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licens
 - p53 TAD (онкобиология)
 - Белок Tau (болезнь Альцгеймера)
 - Амилоид-бета 1-42
+
+**Метаморфные белки — DEMON ВИДИТ ДВА АТТРАКТОРА:**
+- Детекция: **97.7%** (42/43 метаморфных позиций)
+- Бимодальный kNN: возвращает И спираль И лист соседей
+- Одна последовательность → две конформации обнаружены
+- *AlphaFold не может этого — одна структура на последовательность*
 
 ### 2. Реконструкция Зоны Избегания (Космология)
 
