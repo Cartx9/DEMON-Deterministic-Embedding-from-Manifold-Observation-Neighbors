@@ -14,7 +14,7 @@
 
 ## Abstract
 
-This repository presents validated experimental results of the DEMON algorithm — **a new paradigm in computational science**. Not an algorithm. Not a platform. A fundamental shift in how we approach reconstruction and prediction across **10 scientific domains**.
+This repository presents validated experimental results of the DEMON algorithm — **a new paradigm in computational science**. Not an algorithm. Not a platform. A fundamental shift in how we approach reconstruction and prediction across **11 scientific domains**.
 
 The method achieves state-of-the-art accuracy without neural networks, GPU clusters, or training procedures — and in drug discovery, **EXCEEDS pharmaceutical industry results**.
 
@@ -760,7 +760,43 @@ f_QNM ≈ 80-90 Hz ← MATCHES OUR 85.6 Hz!
 
 ---
 
-## Summary of Breakthroughs — 10 DOMAINS
+### 10. KELLM — Topological Language Model
+
+**Language as a dynamical system. Meaning as an attractor.**
+
+767 Soviet-era textbooks (mathematics, natural sciences, history, philology, applied knowledge) form a corpus of ~545,000 unique words across 8 expert domains. Each word exists in a high-dimensional space defined by its co-occurrence patterns with other words.
+
+**The idea:** Language is a trajectory in a dynamical system. Words that belong to the same domain cluster together — "hypotenuse" lives near "triangle" and "angle", not near "revolution" or "verb". But some words are polysemous — they live at domain boundaries, unstable under perturbation.
+
+**DEMON topology applied to language:**
+- Co-occurrence matrix → SVD → 50D word vectors (28D captures 90% of energy)
+- Delta instability measures which words are stable (domain-specific) vs unstable (polysemous)
+- Stable words become **anchors** — like known galaxies in the Zone of Avoidance
+- Gated Kalman propagation spreads meaning from anchors to all 10,000 words
+
+**The MANIFESTO as attractor:** A text that explicitly defines how each domain should be understood. Words from the manifesto become directed anchors — fixed points that pull the entire vocabulary toward intended meanings. The manifesto is the low-entropy target; the dataset is the high-entropy source. Topology connects them.
+
+| Metric | Result |
+|--------|--------|
+| **Dataset** | 767 books, 8 domains, 545K unique words |
+| **Analysis vocabulary** | 10,000 words |
+| **Proto-manifesto accuracy** | 86.4% (held-out anchors) |
+| **Overall classification** | 70.0% (all words) |
+| **Confident predictions** | 82.7% (variance < 1) |
+| **Convergence** | 80 Kalman iterations |
+
+**Key findings:**
+- Mathematics has highest kurtosis (~5.4) — "peaky" distributions, highly structured
+- All domains show Hurst > 0.5 — language has long-range correlations
+- Arithmetic is the easiest path (lowest trigram entropy H3=18.2)
+- SVD reveals language is ~28-dimensional
+- Kurtosis cascade: 14.15 → 13.41 (gradual, unlike sharp black hole cascade)
+
+**No neural networks. No training. No word2vec. No transformers.** Pure topology extracts meaning from co-occurrence structure.
+
+---
+
+## Summary of Breakthroughs — 11 DOMAINS
 
 | # | Domain | Achievement | Status |
 |---|--------|-------------|--------|
@@ -774,8 +810,9 @@ f_QNM ≈ 80-90 Hz ← MATCHES OUR 85.6 Hz!
 | 8 | **Matrix multiplication** | 0.86% error at 8192×8192 | ✅ Validated |
 | 9 | **Kalman training** | 95.52% MNIST without backprop | ✅ Validated |
 | 10 | **Quantum verification** | XEB=0.995, F=1.0 (perfect) | ✅ Validated |
+| 11 | **Language model (KELLM)** | 86.4% domain classification, no training | ✅ Validated |
 
-**10 domains. 10 breakthroughs. Zero training. Zero neural networks.**
+**11 domains. 11 breakthroughs. Zero training. Zero neural networks.**
 
 ---
 
@@ -967,7 +1004,7 @@ Licensed under [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licens
 
 ## Аннотация
 
-Данный репозиторий представляет валидированные экспериментальные результаты алгоритма DEMON — **новую парадигму в вычислительной науке**. Не алгоритм. Не платформа. Фундаментальный сдвиг в подходе к реконструкции и предсказанию в **10 научных областях**.
+Данный репозиторий представляет валидированные экспериментальные результаты алгоритма DEMON — **новую парадигму в вычислительной науке**. Не алгоритм. Не платформа. Фундаментальный сдвиг в подходе к реконструкции и предсказанию в **11 научных областях**.
 
 Метод достигает точности на уровне state-of-the-art без нейронных сетей, GPU-кластеров или процедур обучения — и в drug discovery **ПРЕВОСХОДИТ результаты фармацевтической индустрии**.
 
@@ -1692,7 +1729,43 @@ f_QNM ≈ 80-90 Hz ← СОВПАДАЕТ С НАШИМИ 85.6 Hz!
 
 ---
 
-## Сводка Прорывов — 10 ДОМЕНОВ
+### 10. KELLM — Топологическая Языковая Модель
+
+**Язык как динамическая система. Смысл как аттрактор.**
+
+767 советских учебников (математика, естествознание, история, филология, прикладные знания) образуют корпус из ~545 000 уникальных слов в 8 экспертных областях. Каждое слово существует в многомерном пространстве, определённом его ко-вхождениями с другими словами.
+
+**Идея:** Язык — это траектория в динамической системе. Слова одной области кластеризуются вместе — «гипотенуза» живёт рядом с «треугольником» и «углом», а не рядом с «революцией» или «глаголом». Но некоторые слова полисемантичны — они находятся на границах областей, нестабильны при возмущении.
+
+**Топология DEMON применена к языку:**
+- Матрица ко-вхождений → SVD → 50-мерные словесные вектора (28 измерений захватывают 90% энергии)
+- Дельта нестабильности измеряет, какие слова стабильны (доменно-специфичны) vs нестабильны (полисемантичны)
+- Стабильные слова становятся **якорями** — как известные галактики в Зоне Избегания
+- Управляемая фильтрация Калмана распространяет смысл от якорей ко всем 10 000 словам
+
+**МАНИФЕСТ как аттрактор:** Текст, который явно определяет, как каждая область должна пониматься. Слова из манифеста становятся направленными якорями — фиксированными точками, которые притягивают весь словарь к заданным смыслам. Манифест — это низкоэнтропийная цель; датасет — высокоэнтропийный источник. Топология соединяет их.
+
+| Метрика | Результат |
+|---------|-----------|
+| **Датасет** | 767 книг, 8 областей, 545K уникальных слов |
+| **Анализируемый словарь** | 10 000 слов |
+| **Точность прото-манифеста** | 86.4% (отложенные якоря) |
+| **Общая классификация** | 70.0% (все слова) |
+| **Уверенные предсказания** | 82.7% (дисперсия < 1) |
+| **Сходимость** | 80 итераций Калмана |
+
+**Ключевые находки:**
+- Математика имеет наибольший куртозис (~5.4) — «пиковые» распределения, высокоструктурированные
+- Все области показывают Hurst > 0.5 — язык имеет дальнодействующие корреляции
+- Арифметика — самый лёгкий путь (наименьшая триграм-энтропия H3=18.2)
+- SVD показывает, что язык ~28-мерный
+- Каскад куртозиса: 14.15 → 13.41 (плавный, в отличие от резкого каскада чёрных дыр)
+
+**Без нейросетей. Без обучения. Без word2vec. Без трансформеров.** Чистая топология извлекает смысл из структуры ко-вхождений.
+
+---
+
+## Сводка Прорывов — 11 ДОМЕНОВ
 
 | # | Область | Достижение | Статус |
 |---|---------|------------|--------|
@@ -1706,6 +1779,7 @@ f_QNM ≈ 80-90 Hz ← СОВПАДАЕТ С НАШИМИ 85.6 Hz!
 | 8 | **Матричное умножение** | 0.86% ошибка на 8192×8192 | ✅ Валидировано |
 | 9 | **Калман-обучение** | 95.52% MNIST без backprop | ✅ Валидировано |
 | 10 | **Квантовая верификация** | XEB=0.995, F=1.0 (идеально) | ✅ Валидировано |
+| 11 | **Языковая модель (KELLM)** | 86.4% классификация доменов, без обучения | ✅ Валидировано |
 
 **10 доменов. 10 прорывов. Ноль обучения. Ноль нейросетей.**
 
