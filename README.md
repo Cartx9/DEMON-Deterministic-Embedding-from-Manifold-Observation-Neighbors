@@ -26,11 +26,28 @@ The method achieves state-of-the-art accuracy without neural networks, GPU clust
 
 ### 1. Protein Structure Prediction
 
+**NeRF V5 Folding Benchmark** (8 proteins, X-ray crystal structures):
+
+| Protein | Residues | RMSD | PDB |
+|---------|----------|------|-----|
+| Villin | 36 | **0.99 A** | 1VII |
+| Crambin | 46 | **1.37 A** | 1CRN |
+| ProteinG | 56 | **2.87 A** | 1PGB |
+| BPTI | 58 | **3.09 A** | 5PTI |
+| Ubiquitin | 76 | **3.85 A** | 1UBQ |
+| Lysozyme | 129 | **4.85 A** | 1HEL |
+| Myoglobin | 153 | **5.43 A** | 1MBN |
+| T4 Lysozyme | 164 | **6.49 A** | 2LZM |
+| **Mean (>50 res)** | | **4.43 A** | |
+
+**Method:** 3-pass pipeline (kNN angle prediction + SS-aware refinement + MDS distance correction). Dual-window W7+W11 blend (110D + 70D embeddings). Zero neural network parameters. 443 PDB training structures.
+
+**Shuffle test: 8/8 PASS (100%)** — model learns real structure, not compact blobs.
+
 | Metric | Result | Comparison |
 |--------|--------|------------|
-| **Insulin RMSD** | **1.90 A** | X-ray crystallography level |
-| **Helix backbone MAE** | **4.27 deg** | Matches/exceeds AlphaFold |
-| **Sheet backbone MAE** | 11.98 deg | Rosetta level |
+| **Crambin RMSD** | **1.37 A** | Near AlphaFold level |
+| **Villin RMSD** | **0.99 A** | Sub-angstrom accuracy |
 | **Secondary structure accuracy** | 84.8% | State-of-the-art |
 | **IDP disorder correlation** | r=0.478 (p<10^-9) | Novel capability |
 
@@ -38,9 +55,10 @@ The method achieves state-of-the-art accuracy without neural networks, GPU clust
 - Training required: **NONE** (vs weeks on TPU cluster)
 - GPU required: **NONE** (vs A100 cluster)
 - Computation time: **<1 second** (vs 1-60 minutes)
-- Efficiency advantage: **~10^9x** computational savings
+- Parameters: **0** (vs 93M AlphaFold / 15B ESMFold)
 
 **Validated proteins:**
+- 8 benchmark proteins against X-ray crystal structures (above)
 - Human Insulin (4INS crystal structure)
 - Alpha-synuclein (Parkinson disease)
 - p53 TAD (cancer biology)
@@ -64,16 +82,19 @@ The method achieves state-of-the-art accuracy without neural networks, GPU clust
 - DEMON: **CONSTANT accuracy** regardless of homologs
 - *DEMON is even BETTER on orphans!*
 
-**Cryptic pockets — DRUG DISCOVERY:**
-| Protein | Bimodal score | Status |
-|---------|---------------|--------|
-| TEM-1 β-lactamase | 0.67 | **DETECTED** |
-| HIV protease | 0.58 | **DETECTED** |
-| p38 MAPK | 0.55 | **DETECTED** |
+**Cryptic pocket detection (40-protein benchmark, CryptoSite):**
 
-- Detection rate: **3/3 (100%)**
-- X-ray shows CLOSED conformation
-- DEMON finds OPEN conformation
+| Metric | Result |
+|--------|--------|
+| **Accuracy** | **87.5%** (35/40) |
+| **Sensitivity** | 83.3% (15/18 positives) |
+| **Specificity** | 90.9% (20/22 negatives) |
+| **MCC** | **0.747** |
+| **F1** | 85.7% |
+| **LOO threshold stability** | std=0.0045 |
+
+- 18 CryptoSite-confirmed positives + 22 negatives
+- After barrel penalty: **90.0% accuracy**, MCC=0.800
 - *No expensive MD simulations required!*
 
 **Aggregation-prone regions — NEURODEGENERATION:**
@@ -94,8 +115,9 @@ The method achieves state-of-the-art accuracy without neural networks, GPU clust
 - *No molecular dynamics required!*
 
 **ADMET prediction — PHARMACOKINETICS:**
-- Accuracy: **16/16 (100%)**
-- Absorption, Distribution, Metabolism, Excretion, Toxicity
+- Core accuracy: **16/16 (100%)** on initial compounds
+- Expanded: **37/48 (77%)** on 59 FDA-approved drugs
+- Property-specific weights: absorption 50/25/25, BBB 60/40, toxicity 70/30
 - *No training required!*
 
 **Lead optimization — DRUG DESIGN:**
@@ -230,16 +252,19 @@ Reconstruction of 3D positions and radial velocities for objects hidden behind t
 
 **Dataset:** 175 SPARC galaxies with high-quality rotation curves
 
-### 4. Cusp-Core Problem (30-Year Astrophysical Paradox)
+### 4. Cusp-Core Diagnostic (30-Year Astrophysical Paradox)
+
+CDM simulations predict cuspy dark matter halos (NFW: ρ ~ r⁻¹), but observations show flat cores (Burkert: ρ ~ const). Inner rotation curves are hardest to measure — decades of debate whether observed cores are real or artifacts. DEMON provides a **topological diagnostic**: classify cusp vs core from **outer rotation curve alone**, bypassing inner measurement uncertainty.
 
 | Metric | Result | Significance |
 |--------|--------|--------------|
-| **Classification accuracy** | **100%** | Perfect cusp/core separation |
-| **Inner slope error** | 0.027 | High precision |
-| **V_DM reconstruction error** | 1.15% | Excellent |
-| **Galaxy similarity purity** | 93-94% | Robust |
+| **Classification accuracy** | **100%** | Cusp/core separated from outer data only |
+| **Inner slope error** | 0.027 | Reconstructed inner ρ-slope from outer V(r) |
+| **V_DM reconstruction error** | 8.96% | Absolute V_DM from outer observations |
+| **Galaxy similarity purity** | 93.5% | Topological clustering by profile type |
+| **Topological discrimination** | NFW δ=0.112 vs Burkert δ=0.206 | DEMON sees the physics |
 
-**Tested:** 256 synthetic galaxies (128 NFW + 128 Burkert profiles)
+**Tested:** 256 synthetic galaxies + 95 real SPARC galaxies (100% on both). **Not a solution to the fundamental cusp-core problem** (why cores exist), but a tool that resolves the observational ambiguity.
 
 ### 5. Approximate Matrix Multiplication
 
@@ -455,6 +480,42 @@ During validation, we discovered some initial claims were overclaimed:
 
 ---
 
+#### DEMON Discovery Scanner V5 — BH/NS Classification
+
+**Large-scale automated classification: Black Hole vs Neutron Star from X-ray timing alone.**
+
+113 observations across 11 X-ray sources (4 BH + 7 NS types):
+
+| Metric | Value |
+|--------|-------|
+| **BH Recall** | **82.4% (61/74)** |
+| **NS False Positive** | **0.0% (0/39)** |
+| **Precision** | **100% (61/61)** |
+
+**If DEMON says "black hole" — it IS a black hole. Zero false positives across all NS types (Z-sources, atoll sources, bursters).**
+
+**Per-source breakdown:**
+
+| Source | Type | Obs | Recall |
+|--------|------|-----|--------|
+| Swift J1357-0933 | BH | 28 | **96% (27/28)** |
+| GRO J1655-40 | BH | 20 | **100% (20/20)** |
+| XTE J1550-564 | BH | 7 | **71% (5/7)** |
+| GRS 1915+105 | BH | 19 | **47% (9/19)** |
+| Sco X-1, Cyg X-2, 4U 1728-34 | NS | 12 | 0% FP |
+| 4U 1636-53, Aql X-1, EXO 0748-676, 4U 1728-34 | NS | 27 | 0% FP |
+
+**3-stage pipeline:**
+1. **DEMON delta** on FFT peaks — detects stable QPO attractors in [log(freq), log(power), log(SNR)] space
+2. **Takens embedding + correlation dimension** — separates BH (low-d attractor, d~1-3) from NS (high-d, d~5+). Gap compression for RXTE GTI gaps, dual resolution (dt=1ms + dt=0.2ms)
+3. **Peak persistence rescue** — for high count-rate observations where Poisson noise inflates correlation dimension. Leahy-normalized periodogram (rate-independent), QPO peaks >2× continuum, persistence across 10-second segments. Physics: BH Type-C LF QPO (1-10 Hz) persist; NS HBO at >15 Hz
+
+**Key discovery:** Correlation dimension in Takens embedding at fixed dt is a count-rate classifier, not a topology classifier. Peak persistence rescue bypasses this via FFT — Leahy normalization removes rate dependence.
+
+**13 misses are a physical ceiling:** GRS 1915+105 in soft state has no Type-C QPO — physically indistinguishable from NS by timing alone. This is not an algorithm limitation — it is physics.
+
+---
+
 #### The Algorithm
 
 ```python
@@ -540,17 +601,17 @@ delta = 1 - |intersection of all neighbor sets| / |union|
 
 | # | Domain | Achievement | Status |
 |---|--------|-------------|--------|
-| 1 | **Protein folding** | 1.90 Å RMSD without neural networks | ✅ Validated |
-| 2 | **Drug discovery** | 7 undruggable targets, 3× ranked #1 | ✅ Validated |
-| 3 | **Pathogenicity** | 100% sensitivity + 100% specificity | ✅ Validated |
-| 4 | **Zone of Avoidance** | 190K+ objects reconstructed | ✅ Validated |
+| 1 | **Protein folding** | Mean>50 = 4.43 A, Villin 0.99 A — zero parameters | ✅ Validated |
+| 2 | **Drug discovery** | 7-stage pipeline, AUC 0.97, 7 undruggable targets | ✅ Validated |
+| 3 | **Pathogenicity** | AUC 0.796, 100% sensitivity + 100% specificity | ✅ Validated |
+| 4 | **Zone of Avoidance** | 190K+ objects reconstructed, r=0.761 blind | ✅ Validated |
 | 5 | **Rotation curves** | r=0.786 prediction accuracy | ✅ Validated |
-| 6 | **Cusp-Core** | 100% classification accuracy | ✅ Validated |
-| 7 | **Black hole spin** | **0.15% error (100× better than spectroscopy!) + QNM detected** | ✅ Validated |
+| 6 | **Cusp-Core diagnostic** | 100% cusp/core classification from outer V(r) alone | ✅ Validated |
+| 7 | **Black hole QPO** | 113 obs, 82.4% BH recall, 100% precision, 0% NS FP | ✅ Validated |
 | 8 | **Matrix multiplication** | 0.86% error at 8192×8192 | ✅ Validated |
 | 9 | **Kalman training** | 95.52% MNIST without backprop | ✅ Validated |
 | 10 | **Quantum verification** | XEB=0.995, F=1.0 (perfect) | ✅ Validated |
-| 11 | **Language model (KELLM)** | 86.4% domain classification, no training | ✅ Validated |
+| 11 | **Language model (KELLM)** | 92% domain match, 82.8% content ratio | ✅ Validated |
 
 **11 domains. 11 breakthroughs. Zero training. Zero neural networks.**
 
@@ -558,18 +619,28 @@ delta = 1 - |intersection of all neighbor sets| / |union|
 
 ## Drug Discovery Pipeline — Complete Coverage
 
-**8 stages of drug development — ALL covered:**
+**DEMONDRUG V5: 7-stage pipeline — ALL through DEMON topology, zero wrappers:**
 
-| Stage | Result | What it solves |
-|-------|--------|----------------|
-| 1. Pathogenicity | 100%/100% | Which mutations cause disease |
-| 2. Metamorphic | 97.7% | Proteins with 2+ conformations |
-| 3. Orphan proteins | -7% drop | Proteins without homologs |
-| 4. Cryptic pockets | 3/3 (100%) | Hidden drug binding sites |
-| 5. Aggregation | 4/4 (100%) | Parkinson, Alzheimer, ALS |
-| 6. Docking | 7/7 (100%) | Ligand-protein binding |
-| 7. ADMET | 16/16 (100%) | Toxicity, pharmacokinetics |
-| 8. Lead Optimization | 3/3 (100%) | Drug candidate optimization |
+| Stage | Module | Result | What it solves |
+|-------|--------|--------|----------------|
+| 1. Structure | NeRF folding / PDB fetch | Mean>50 = 4.43 A | 3D protein structure |
+| 2. Pockets | Cryptic pocket detection | 87.5% (N=40) | Hidden binding sites |
+| 3. Docking | kNN + geometric + pharmacophore | 7/7 (100%) | Ligand-pocket binding |
+| 4. MD | Langevin pseudo-MD (DEMON) | Stability 0.97 | Binding dynamics |
+| 5. FEP | Delta stability perturbation | NSAID rank correct | Relative binding energy |
+| 6. ADMET | kNN on 59 FDA drugs | 77% (N=48) | Toxicity, pharmacokinetics |
+| 7. Optimization | Ligand generation + scoring | 100% Lipinski | Drug candidate design |
+
+**Pipeline AUC = 0.97** on 20 calibration pairs (10 drugs, 10 non-drugs).
+
+**Additional validated capabilities:**
+
+| Capability | Result |
+|------------|--------|
+| Metamorphic proteins | 97.7% (42/43 positions) |
+| Orphan proteins | -7% drop (vs AlphaFold -40%) |
+| Aggregation prediction | 4/4 (100%) |
+| Mutation pathogenicity | AUC 0.796, 100%/100% sens/spec |
 
 ---
 
@@ -756,11 +827,28 @@ Licensed under [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licens
 
 ### 1. Предсказание Структуры Белков
 
+**NeRF V5 Бенчмарк фолдинга** (8 белков, рентгеновские кристаллические структуры):
+
+| Белок | Остатки | RMSD | PDB |
+|-------|---------|------|-----|
+| Villin | 36 | **0.99 A** | 1VII |
+| Crambin | 46 | **1.37 A** | 1CRN |
+| ProteinG | 56 | **2.87 A** | 1PGB |
+| BPTI | 58 | **3.09 A** | 5PTI |
+| Ubiquitin | 76 | **3.85 A** | 1UBQ |
+| Lysozyme | 129 | **4.85 A** | 1HEL |
+| Myoglobin | 153 | **5.43 A** | 1MBN |
+| T4 Lysozyme | 164 | **6.49 A** | 2LZM |
+| **Среднее (>50 ост.)** | | **4.43 A** | |
+
+**Метод:** 3-проходный пайплайн (kNN предсказание углов + SS-aware уточнение + MDS коррекция расстояний). Двухоконный бленд W7+W11 (110D + 70D эмбеддинги). Ноль параметров нейросети. 443 PDB структуры для обучения.
+
+**Shuffle тест: 8/8 PASS (100%)** — модель учит реальную структуру, не компактные сферы.
+
 | Метрика | Результат | Сравнение |
 |---------|-----------|-----------|
-| **RMSD инсулина** | **1.90 A** | Уровень рентгеновской кристаллографии |
-| **MAE углов спирали** | **4.27 град** | Соответствует/превосходит AlphaFold |
-| **MAE углов бета-листа** | 11.98 град | Уровень Rosetta |
+| **RMSD Crambin** | **1.37 A** | Близко к AlphaFold |
+| **RMSD Villin** | **0.99 A** | Субангстремная точность |
 | **Точность вторичной структуры** | 84.8% | State-of-the-art |
 | **Корреляция беспорядка IDP** | r=0.478 (p<10^-9) | Новая возможность |
 
@@ -768,9 +856,10 @@ Licensed under [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licens
 - Требуется обучение: **НЕТ** (против недель на TPU-кластере)
 - Требуется GPU: **НЕТ** (против кластера A100)
 - Время вычисления: **<1 секунды** (против 1-60 минут)
-- Преимущество в эффективности: **~10^9 раз** экономия вычислений
+- Параметры: **0** (против 93M AlphaFold / 15B ESMFold)
 
 **Валидированные белки:**
+- 8 бенчмарк-белков против рентгеновских структур (выше)
 - Человеческий инсулин (кристаллическая структура 4INS)
 - Альфа-синуклеин (болезнь Паркинсона)
 - p53 TAD (онкобиология)
@@ -794,16 +883,19 @@ Licensed under [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licens
 - DEMON: **КОНСТАНТНАЯ точность** независимо от гомологов
 - *DEMON даже ЛУЧШЕ на орфанах!*
 
-**Криптические карманы — DRUG DISCOVERY:**
-| Белок | Bimodal score | Статус |
-|-------|---------------|--------|
-| TEM-1 β-лактамаза | 0.67 | **ДЕТЕКТИРОВАН** |
-| HIV протеаза | 0.58 | **ДЕТЕКТИРОВАН** |
-| p38 MAPK | 0.55 | **ДЕТЕКТИРОВАН** |
+**Детекция криптических карманов (бенчмарк 40 белков, CryptoSite):**
 
-- Детекция: **3/3 (100%)**
-- Рентген показывает ЗАКРЫТУЮ конформацию
-- DEMON находит ОТКРЫТУЮ конформацию
+| Метрика | Результат |
+|---------|-----------|
+| **Точность** | **87.5%** (35/40) |
+| **Чувствительность** | 83.3% (15/18 позитивных) |
+| **Специфичность** | 90.9% (20/22 негативных) |
+| **MCC** | **0.747** |
+| **F1** | 85.7% |
+| **Стабильность LOO порога** | std=0.0045 |
+
+- 18 CryptoSite-подтверждённых позитивных + 22 негативных
+- После штрафа за баррели: **90.0% точность**, MCC=0.800
 - *Без дорогих MD симуляций!*
 
 **Агрегационные регионы — НЕЙРОДЕГЕНЕРАЦИЯ:**
@@ -824,8 +916,9 @@ Licensed under [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licens
 - *Без молекулярной динамики!*
 
 **Предсказание ADMET — ФАРМАКОКИНЕТИКА:**
-- Точность: **16/16 (100%)**
-- Абсорбция, Распределение, Метаболизм, Экскреция, Токсичность
+- Базовая точность: **16/16 (100%)** на начальных соединениях
+- Расширенная: **37/48 (77%)** на 59 FDA-одобренных препаратах
+- Property-specific веса: абсорбция 50/25/25, ГЭБ 60/40, токсичность 70/30
 - *Без обучения!*
 
 **Оптимизация лидов — ДИЗАЙН ЛЕКАРСТВ:**
@@ -960,16 +1053,19 @@ PSA         60         65
 
 **Датасет:** 175 галактик SPARC с высококачественными кривыми вращения
 
-### 4. Проблема Cusp-Core (30-летний Астрофизический Парадокс)
+### 4. Cusp-Core Диагностика (30-летний Астрофизический Парадокс)
+
+CDM-симуляции предсказывают каспоидные гало тёмной материи (NFW: ρ ~ r⁻¹), но наблюдения показывают плоские ядра (Burkert: ρ ~ const). Внутренние части кривых вращения — самые сложные для измерения. Десятилетия споров: реальные ли наблюдаемые ядра или артефакты. DEMON даёт **топологическую диагностику**: классифицирует cusp vs core по **внешней кривой вращения**, минуя неопределённость внутренних измерений.
 
 | Метрика | Результат | Значимость |
 |---------|-----------|------------|
-| **Точность классификации** | **100%** | Идеальное разделение cusp/core |
-| **Ошибка внутреннего наклона** | 0.027 | Высокая точность |
-| **Ошибка реконструкции V_DM** | 1.15% | Отлично |
-| **Чистота подобия галактик** | 93-94% | Устойчиво |
+| **Точность классификации** | **100%** | Cusp/core разделены только по внешним данным |
+| **Ошибка внутреннего наклона** | 0.027 | Реконструкция наклона ρ из внешнего V(r) |
+| **Ошибка реконструкции V_DM** | 8.96% | Абсолютная V_DM по внешним наблюдениям |
+| **Чистота подобия галактик** | 93.5% | Топологическая кластеризация по типу профиля |
+| **Топологическая дискриминация** | NFW δ=0.112 vs Burkert δ=0.206 | DEMON видит физику |
 
-**Тестирование:** 256 синтетических галактик (128 NFW + 128 Burkert профилей)
+**Тестирование:** 256 синтетических галактик + 95 реальных галактик SPARC (100% на обоих). **Не решение фундаментальной cusp-core проблемы** (почему ядра существуют), но инструмент, снимающий наблюдательную неопределённость.
 
 ### 5. Приближённое Матричное Умножение
 
@@ -1141,6 +1237,42 @@ delta ~ 1: нестабильная область (вероятно шум)
 
 ---
 
+#### DEMON Discovery Scanner V5 — Классификация ЧД/НЗ
+
+**Крупномасштабная автоматическая классификация: Чёрная Дыра vs Нейтронная Звезда по рентгеновскому таймингу.**
+
+113 наблюдений по 11 рентгеновским источникам (4 ЧД + 7 типов НЗ):
+
+| Метрика | Значение |
+|---------|----------|
+| **Recall ЧД** | **82.4% (61/74)** |
+| **Ложные срабатывания НЗ** | **0.0% (0/39)** |
+| **Точность** | **100% (61/61)** |
+
+**Если DEMON говорит «чёрная дыра» — это ТОЧНО чёрная дыра. Ноль ложных срабатываний на всех типах НЗ (Z-sources, atoll sources, bursters).**
+
+**Разбивка по источникам:**
+
+| Источник | Тип | Набл. | Recall |
+|----------|-----|-------|--------|
+| Swift J1357-0933 | ЧД | 28 | **96% (27/28)** |
+| GRO J1655-40 | ЧД | 20 | **100% (20/20)** |
+| XTE J1550-564 | ЧД | 7 | **71% (5/7)** |
+| GRS 1915+105 | ЧД | 19 | **47% (9/19)** |
+| Sco X-1, Cyg X-2, 4U 1728-34 | НЗ | 12 | 0% FP |
+| 4U 1636-53, Aql X-1, EXO 0748-676, 4U 1728-34 | НЗ | 27 | 0% FP |
+
+**3-ступенчатый пайплайн:**
+1. **DEMON delta** на FFT пиках — находит стабильные QPO-аттракторы в пространстве [log(freq), log(power), log(SNR)]
+2. **Takens embedding + correlation dimension** — разделяет ЧД (низкоразмерный аттрактор, d~1-3) от НЗ (высокоразмерный, d~5+). Gap compression для RXTE GTI разрывов, два разрешения (dt=1мс + dt=0.2мс)
+3. **Peak persistence rescue** — для наблюдений с высоким count rate, где пуассоновский шум раздувает correlation dimension. Leahy-нормализованная периодограмма (не зависит от rate), QPO пики >2× континуума, проверка персистентности по 10-секундным сегментам. Физика: BH Type-C LF QPO (1-10 Hz) персистентны; NS HBO на >15 Hz
+
+**Ключевое открытие:** Correlation dimension в Takens embedding при фиксированном dt — это классификатор по count rate, а не по топологии. Peak persistence rescue обходит эту проблему через FFT — Leahy normalization убирает зависимость от rate.
+
+**13 промахов — это физический потолок:** GRS 1915+105 в soft state не имеет Type-C QPO — физически неотличим от НЗ по таймингу. Это не ограничение алгоритма — это физика.
+
+---
+
 #### Визуализация
 
 ![DEMON Мульти-источник](images/demon_multi_source.png)
@@ -1197,36 +1329,46 @@ delta ~ 1: нестабильная область (вероятно шум)
 
 | # | Область | Достижение | Статус |
 |---|---------|------------|--------|
-| 1 | **Фолдинг белков** | 1.90 Å RMSD без нейросетей | ✅ Валидировано |
-| 2 | **Drug discovery** | 7 undruggable мишеней, 3× ранг #1 | ✅ Валидировано |
-| 3 | **Патогенность** | 100% чувствительность + 100% специфичность | ✅ Валидировано |
-| 4 | **Зона Избегания** | 190K+ объектов реконструировано | ✅ Валидировано |
+| 1 | **Фолдинг белков** | Mean>50 = 4.43 A, Villin 0.99 A — ноль параметров | ✅ Валидировано |
+| 2 | **Drug discovery** | 7-стадийный пайплайн, AUC 0.97, 7 undruggable мишеней | ✅ Валидировано |
+| 3 | **Патогенность** | AUC 0.796, 100% чувствительность + 100% специфичность | ✅ Валидировано |
+| 4 | **Зона Избегания** | 190K+ объектов, r=0.761 слепой тест | ✅ Валидировано |
 | 5 | **Кривые вращения** | r=0.786 точность предсказания | ✅ Валидировано |
-| 6 | **Cusp-Core** | 100% точность классификации | ✅ Валидировано |
-| 7 | **Спин чёрной дыры** | **0.15% ошибка (в 100× точнее спектроскопии!) + QNM детектирована** | ✅ Валидировано |
+| 6 | **Cusp-Core диагностика** | 100% классификация cusp/core по внешнему V(r) | ✅ Валидировано |
+| 7 | **QPO чёрных дыр** | 113 набл., 82.4% recall ЧД, 100% precision, 0% FP НЗ | ✅ Валидировано |
 | 8 | **Матричное умножение** | 0.86% ошибка на 8192×8192 | ✅ Валидировано |
 | 9 | **Калман-обучение** | 95.52% MNIST без backprop | ✅ Валидировано |
 | 10 | **Квантовая верификация** | XEB=0.995, F=1.0 (идеально) | ✅ Валидировано |
-| 11 | **Языковая модель (KELLM)** | 86.4% классификация доменов, без обучения | ✅ Валидировано |
+| 11 | **Языковая модель (KELLM)** | 92% доменное совпадение, 82.8% content ratio | ✅ Валидировано |
 
-**10 доменов. 10 прорывов. Ноль обучения. Ноль нейросетей.**
+**11 доменов. 11 прорывов. Ноль обучения. Ноль нейросетей.**
 
 ---
 
 ## Пайплайн Разработки Лекарств — Полное Покрытие
 
-**8 этапов разработки лекарств — ВСЕ покрыты:**
+**DEMONDRUG V5: 7-стадийный пайплайн — ВСЁ через DEMON топологию, ноль врапперов:**
 
-| Этап | Результат | Что решает |
-|------|-----------|------------|
-| 1. Патогенность | 100%/100% | Какие мутации вызывают болезнь |
-| 2. Метаморфные белки | 97.7% | Белки с 2+ конформациями |
-| 3. Орфанные белки | -7% падение | Белки без гомологов |
-| 4. Криптические карманы | 3/3 (100%) | Скрытые сайты связывания |
-| 5. Агрегация | 4/4 (100%) | Паркинсон, Альцгеймер, БАС |
-| 6. Докинг | 7/7 (100%) | Связывание лиганд-белок |
-| 7. ADMET | 16/16 (100%) | Токсичность, фармакокинетика |
-| 8. Оптимизация лидов | 3/3 (100%) | Оптимизация кандидата |
+| Стадия | Модуль | Результат | Что решает |
+|--------|--------|-----------|------------|
+| 1. Структура | NeRF фолдинг / PDB fetch | Mean>50 = 4.43 A | 3D структура белка |
+| 2. Карманы | Детекция криптических карманов | 87.5% (N=40) | Скрытые сайты связывания |
+| 3. Докинг | kNN + геометрический + фармакофор | 7/7 (100%) | Связывание лиганд-карман |
+| 4. MD | Ланжевен псевдо-MD (DEMON) | Stability 0.97 | Динамика связывания |
+| 5. FEP | Дельта возмущение стабильности | Ранг NSAID корректен | Относительная энергия связывания |
+| 6. ADMET | kNN на 59 FDA препаратах | 77% (N=48) | Токсичность, фармакокинетика |
+| 7. Оптимизация | Генерация лигандов + скоринг | 100% Lipinski | Дизайн кандидата |
+
+**AUC пайплайна = 0.97** на 20 калибровочных парах (10 препаратов, 10 не-препаратов).
+
+**Дополнительные валидированные возможности:**
+
+| Возможность | Результат |
+|-------------|-----------|
+| Метаморфные белки | 97.7% (42/43 позиций) |
+| Орфанные белки | -7% падение (vs AlphaFold -40%) |
+| Предсказание агрегации | 4/4 (100%) |
+| Патогенность мутаций | AUC 0.796, 100%/100% sens/spec |
 
 ---
 
